@@ -1,0 +1,91 @@
+html{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+}
+
+body{
+    overflow-x:hidden;
+    color: rgb(29, 29, 31);
+    letter-spacing: -0.05em;
+    background: white;
+}
+p{
+    line-height: 1.6;
+}
+.global-nav{
+    height: 44px;
+    padding: 0 1rem;
+}
+.local-nav{
+    height:52px;
+    border-bottom: 1px solid #ddd;
+    padding: 0 1rem;
+}
+/* 이렇게 하면 두개 다 속성값을 줄수가 있네.. */
+.global-nav-links,
+.local-nav-links{
+    display:flex;
+    align-items: center;
+    /* justify-content:space-between; */
+    height: 100%;
+    max-width:1000px; 
+    /* 이거 정말 꿀팁이다.. */
+    /* https://studiomeal.com/archives/533 */
+    margin: 0 auto;   
+}
+.global-nav-links{
+    justify-content: space-between;
+}
+/* 오른쪽 마진에 auto를 주면 다 소비를함 센터 정렬을 할때 마진을 오토로하면 다 소비로함 */
+.local-nav-links .product-name{
+    margin-right: auto;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+.local-nav-links{
+    font-size:0.8rem;
+}
+.local-nav-links a:not(.product-name){
+    margin-left:2em;
+}
+/* not 이란거 진짜 대박이네 꼭 알아두자 */
+a {
+    color : rgb(29, 29, 31); 
+    text-decoration: none;
+}
+.scroll-section{
+    padding-top: 50vh; 
+}
+#scroll-section-0 h1{
+    font-size: 4rem;
+    text-align: center;
+}
+.main-message{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3em;
+    font-size: 2.5rem;
+}
+.main-message p{
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+}
+.description{
+    padding: 0 1rem;
+    font-size: 1.2;
+    color: #888;
+}
+.description strong{
+    float: left;
+    margin-right: 0.2em;
+    font-size: 3rem;
+    color: rgb(29, 29, 31);
+
+}
+/* 뷰포트는 인터넷 창의 높이라고 생각하면 된다 */
+
+/* 폰트사이즈는 rem 그리고 margin은 em을 사용함  */
+/* em으로 하면 편한게 현재 내 폰트사이즈의 비유를 할 수 있음 */
+/* ex 현재 내 폰트 사이즈의 3배  */
