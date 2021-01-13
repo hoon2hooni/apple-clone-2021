@@ -1,5 +1,8 @@
 
 (()=>{
+    let yOffset = 0; //쓸 변수 들 선언
+    let prevScrollHeight = 0; // 현재 스크롤 위치(yOffset)
+    let currentScene = 0; // 현재 활성화된(눈 앞에 보고 있는 씬 , scroll- section) 
     const sceneInfo = [
         {   
             //o
@@ -39,7 +42,7 @@
         }
         
     ];
-    
+    console.log(sceneInfo[1].scrollHeight);
     function setLayout( ){
         // 각 스크롤 섹션의 높이 세팅
         for  (let i =0; i < sceneInfo.length; i++){
@@ -47,12 +50,30 @@
             sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
         }
     }
+    
     function scrollLoop( ){
-        console.log(window.pageYOffset);
+        prevScrollHeight = 0;
+        for  (let i =0; i < currentScene; i++){
+            prevScrollHeight += sceneInfo[i].scrollHeight;
+        }
+        if  (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight){
+            currentScene ++ ;
+        }
+        if (yOffset < prevScrollHeight){
+            if (currentScene ===0) return;
+            currentScene --;
+        }
+        //  내려갈때 yOffset  >  prevScrollHeight + section -> currentScent  += 1 
+        //  올라갈때  yOffset  < prevScrollHeight - > currentScene  -= 1
+        // 메뉴떄매  딱맞아 덜어지지 않음
+
+        console.log(currentScene);
     }
 
     window.addEventListener("resize", setLayout());
     window.addEventListener("scroll", () => {
+        yOffset  = window.pageYOffset;
+        // console.log(yOffset)
         scrollLoop( );
     });
 
