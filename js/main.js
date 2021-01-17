@@ -10,10 +10,18 @@
             heightNum: 5, //브라우저 높이의 5배로 sccrollHeight 세팅  디바이스 마다 다르기에 이렇게 해줌
             scrollHeight: 0, // 스크롤높이 스크롤의 몇배수
             objs: {
-                container: document.querySelector('#scroll-section-0')
+                container: document.querySelector('#scroll-section-0'),
+                messageA: document.querySelector("#scroll-section-0 .main-message.a"),
+                messageB: document.querySelector("#scroll-section-0 .main-message.b"),
+                messageC: document.querySelector("#scroll-section-0 .main-message.c"),
+                messageD: document.querySelector("#scroll-section-0 .main-message.d")
+            },
+            values: {
+                messageA_opacity: [0, 1]
             }
         },
-        {   
+
+        {  
             //1
             type:"normal",
             heightNum: 5, 
@@ -60,7 +68,34 @@
             }
         }
     }
-    
+    function calcValues(currentValue, currentYOffset){
+        let rv = currentYOffset; 
+        let scrollRatio =currentYOffset / sceneInfo[currentScene].scrollHeight;
+        rv = scrollRatio * (currentValue[1]- currentValue[0])+ currentValue[0];
+        
+        return rv ;
+    }
+    function playAnimation( )  {
+        const objs = sceneInfo[currentScene].objs;
+        const values = sceneInfo[currentScene].values;
+        const currentYOffset = yOffset - prevScrollHeight;
+        console.log(currentYOffset)
+        switch (currentScene) { 
+            case 0:
+                let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset);
+                objs.messageA.style.opacity = messageA_opacity_in;
+                break;
+            case 1:
+                console.log('1 play');
+                break;
+            case 2:
+                console.log('2 play');
+                break;
+            case 3:
+                console.log('3 play');
+                break;
+        }
+    }
     function scrollLoop( ){
         prevScrollHeight = 0;
         for  (let i =0; i < currentScene; i++){
@@ -81,7 +116,7 @@
         //  올라갈때  yOffset  < prevScrollHeight - > currentScene  -= 1
         // 메뉴떄매  딱맞아 덜어지지 않음
 
-        console.log(currentScene);
+    
     }
 
     window.addEventListener("resize", setLayout());
@@ -89,6 +124,7 @@
         yOffset  = window.pageYOffset;
         // console.log(yOffset)
         scrollLoop( );
+        playAnimation( );
     });
     // window.addEventListener("DOMContentLoaded", setLayout);
     window.addEventListener("load", setLayout);
