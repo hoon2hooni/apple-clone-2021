@@ -3,6 +3,7 @@
     let yOffset = 0; //쓸 변수 들 선언
     let prevScrollHeight = 0; // 현재 스크롤 위치(yOffset)
     let currentScene = 0; // 현재 활성화된(눈 앞에 보고 있는 씬 , scroll- section) 
+    let enterNewScene = false;
     const sceneInfo = [
         {   
             //o
@@ -17,7 +18,8 @@
                 messageD: document.querySelector("#scroll-section-0 .main-message.d")
             },
             values: {
-                messageA_opacity: [0, 1]
+                messageA_opacity: [0, 1, { start: 0.1, end: 0.2 }],  //10퍼센트에서 20퍼센트 스크롤의 비율
+                messageB_opacity: [0, 1, { start: 0.3, end: 0.4 }], //30퍼센트에서 40퍼센트
             }
         },
 
@@ -68,22 +70,39 @@
             }
         }
     }
-    function calcValues(currentValue, currentYOffset){
+    function calcValues(currentValues, currentYOffset){
         let rv = currentYOffset; 
-        let scrollRatio =currentYOffset / sceneInfo[currentScene].scrollHeight;
-        rv = scrollRatio * (currentValue[1]- currentValue[0])+ currentValue[0];
+        const scrollHeight = sceneInfo[currentScene].scrollHeight;
+        const scrollRatio =currentYOffset / scrollHeight;
         
-        return rv ;
+        if (currentValues.length === 3 ){
+            //start ~end 사이에 애니메션 실행
+            const partScrollStart = currentValues[2].start * scrollHeight;
+            const partScrollEnd = currentValues[2].end *  scrollHeight;
+            const partScrollHeight = partScrollEnd - partScrollStart;
+
+            if (currentYOffset >= partScrollStart && currentYOffset <= partScrollEnd){
+                rv = (currentYOffset - partScrollStart)/partScrollHeight * (currentValues[1] - currentValues[0]) + currentValues[0];    
+            }else if (currentYOffset < partScrollStart){
+                rv = currentValues[0];
+            } else if (currentYOffset > partScrollEnd) {
+                rv = currentValues[1];
+            }
+        } else{
+            rv = scrollRatio * (currentValues[1]- currentValues[0])+ currentValues[0]; // 현재 씬의 처음부터 끝가지 진행 되는것 근데 이제 분기 처리를 해줘야됨
+        }
+        return rv;
     }
     function playAnimation( )  {
         const objs = sceneInfo[currentScene].objs;
         const values = sceneInfo[currentScene].values;
         const currentYOffset = yOffset - prevScrollHeight;
-        console.log(currentYOffset)
+        console.log(currentScene);
         switch (currentScene) { 
             case 0:
                 let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset);
                 objs.messageA.style.opacity = messageA_opacity_in;
+                console.log(messageA_opacity_in);
                 break;
             case 1:
                 console.log('1 play');
@@ -97,20 +116,25 @@
         }
     }
     function scrollLoop( ){
+        enterNewScene = true;
         prevScrollHeight = 0;
         for  (let i =0; i < currentScene; i++){
             prevScrollHeight += sceneInfo[i].scrollHeight;
         }
         if  (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight){
+            enterNewScene = true;
             currentScene ++ ;
             document.body.setAttribute("id", `show-scene-${currentScene}`);
             //나중에 다시 수정해야 할 부분 
         }
         if (yOffset < prevScrollHeight){
+            enterNewScene = true;
             if (currentScene ===0) return;
             currentScene --;
             document.body.setAttribute("id", `show-scene-${currentScene}`);
         }
+        if  (enterNewScene) return;
+        playAnimation( );
         // document.body.setAttribute("id", `show-scene-${currentScene}`);
         //  내려갈때 yOffset  >  prevScrollHeight + section -> currentScent  += 1 
         //  올라갈때  yOffset  < prevScrollHeight - > currentScene  -= 1
